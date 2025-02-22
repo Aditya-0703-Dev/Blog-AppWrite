@@ -20,7 +20,7 @@ function Signup() {
 			if (sessionData) {
 				const userData = await authService.GetCurrentUser();
 				if (userData) {
-					useDispatch(storeLogin(userData));
+					dispatch(storeLogin(userData));
 					navigate("/");
 				}
 			}
