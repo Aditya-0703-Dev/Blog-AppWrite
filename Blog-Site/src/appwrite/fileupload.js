@@ -1,9 +1,9 @@
 import config from '../config/config.js'
-import { Client, ID } from "appwrite";
+import { Client, ID, Storage } from "appwrite";
 
 export class FileUploadService {
     client = new Client();
-    storage;
+    
 
     constructor(){
         this.client

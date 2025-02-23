@@ -6,5 +6,11 @@ import LogoutBtn from './header/LogoutBtn';
 import Button from './Button';
 import Input from './Input';
 import RTE from './RTE';
+import PostCard from './PostCard';
+import Signup from './Signup';
+import Login from './Login';
+import PostForm from './post_form/PostForm';
+import ComboBox from './ComboBox';
+import Protected from './AuthLayout';
 
-export {Header, Footer, Logo, Container, LogoutBtn, Button, Input, RTE};
+export {Header, Footer, Logo, Container, LogoutBtn, Button, Input, RTE, PostCard, Signup, Login, PostForm, ComboBox, Protected};

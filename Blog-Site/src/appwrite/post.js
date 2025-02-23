@@ -76,8 +76,9 @@ export class PostService {
         }
     }
 
-    async GetPosts(query = Query.select(["status", "active"])){
+    async GetPosts(query = Query.select(["status", "Active"])){
         try {
+            //returns an array of all posts
             return await this.databases.listDocuments(
                 config.appwriteDatabaseID,
                 config.appwriteCollectionID,
