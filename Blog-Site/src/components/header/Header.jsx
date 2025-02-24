@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 import {Container, Logo, LogoutBtn} from '../componentsIndex'
 
 function Header() {
-    const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+    const isLoggedIn = useSelector((state) => state.isLoggedIn);
     const navigate = useNavigate();
 
     const navItems = [
@@ -20,7 +20,7 @@ function Header() {
         },
         {
             title: 'Register',
-            slug: '/register',
+            slug: '/signup',
             active: !isLoggedIn
         },
         {
@@ -47,7 +47,7 @@ function Header() {
                             item.active ? (
                                 <li key={item.title}>
                                     <button onClick={() => navigate(item.slug)} className='inline-block px-6 py-2 duration-200 hover:bg-blue-100 rounded-full'>
-                                        {item.name}
+                                        {item.title}
                                     </button>
                                 </li>
                             ) : null

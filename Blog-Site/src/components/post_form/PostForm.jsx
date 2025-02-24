@@ -1,4 +1,4 @@
-import React , {useCallback, useEffect} from 'react'
+import React , {useCallback, useEffect, useState} from 'react'
 import { useForm } from 'react-hook-form'
 import {Button, Input, ComboBox, RTE} from '../componentsIndex'
 import postService from '../../appwrite/post'
@@ -17,33 +17,34 @@ function PostForm({post}) {
     })
 
     const navigate = useNavigate()
-    const userData = useSelector(state => state.auth.userData)
+
+    const [image, setImage] = useState("");
+    const userData = useSelector(state => state.userData)
 
     const submit = async (data) => {
         if(post){
-            const file = data.image[0] ? fileUploadService.CreateFile(data.image[0]) : null
-
+            const file = data.image[0] ? await fileUploadService.CreateFile(data.image[0]) : null
+            console.log(post);
             if(file){
-                fileUploadService.DeleteFile(post.featuredImage)
+                await fileUploadService.DeleteFile(post.featuredImage)
             }
 
-            const updatedPost = postService.UpdatePost(post.$id, {
+            const updatedPost = await postService.UpdatePost(post.$id, {
                 ...data,
-                featuredImage: file ? file.$id : null
+                featuredImage: file ? file.$id : post.featuredImage
             })
 
             if(updatedPost){
                 navigate(`/post/${updatedPost.$id}`)
             }
         } else {
-            const file = data.image[0] ? fileUploadService.CreateFile(data.image[0]) : null
-
+            const file = data.image[0] ? await fileUploadService.CreateFile(data.image[0]) : null
             if(file){
-                const fileID = file.$id
-                data.featuredImage = fileID
+                const fileID = file.$id;
+                data.featuredImage = fileID;
             }
 
-            const newPost = postService.CreatePost({
+            const newPost = await postService.CreatePost({
                 ...data,
                 userId: userData.$id
             })
@@ -57,7 +58,7 @@ function PostForm({post}) {
 
     const slugTransform = useCallback((value) => {
         if(value){
-            return value.toLowerCase().trim().replace(/^[a-zA-Z\d]+/g, "-")
+            return value.toLowerCase().trim().replace(/\s/g, "-")
         }
         return ""
     }, [])
@@ -70,10 +71,21 @@ function PostForm({post}) {
         })
 
         return () => {
-            subscription.unsubscribe()
+            subscription.unsubscribe();
         }
 
     }, [watch, slugTransform, setValue])
+
+    useEffect(() => {
+		const fetchImage = async () => {
+			const src = await fileUploadService.GetFilePreview(post.featuredImage);
+			setImage(src);
+		}
+        if(post){
+            fetchImage();
+            setValue("slug", post.title ? slugTransform(post.title) : "");
+        }
+	}, [post]);
 
     return (
         <form onSubmit={handleSubmit(submit)} className="flex flex-wrap">
@@ -106,13 +118,13 @@ function PostForm({post}) {
                 {post && (
                     <div className="w-full mb-4">
                         <img
-                            src={fileUploadService.GetFilePreview(post.featuredImage)}
+                            src={image}
                             alt={post.title}
                             className="rounded-lg"
                         />
                     </div>
                 )}
-                <Select
+                <ComboBox
                     options={["Active", "Inactive"]}
                     label="Status"
                     className="mb-4"

@@ -8,24 +8,37 @@ import { useSelector } from "react-redux";
 
 export default function Post() {
 	const [post, setPost] = useState(null);
+	const [image, setImage] = useState("");
 	const { slug } = useParams();
 	const navigate = useNavigate();
 
-	const userData = useSelector((state) => state.auth.userData);
+	const userData = useSelector((state) => state.userData);
 
-	const isAuthor = post && userData ? post.userId === userData.$id : false;
+	const isAuthor = post && userData ? post.createdby === userData.$id : false;
 
 	useEffect(() => {
-		if (slug) {
-			postService.GetPost(slug).then((post) => {
-				if (post) setPost(post);
-				else navigate("/");
-			});
-		} else navigate("/");
+		const fetchPost = async () => {
+			if (slug) {
+				await postService.GetPost(slug).then((post) => {
+					if (post) setPost(post);
+					else navigate("/");
+				});
+			} else navigate("/");
+		}
+		fetchPost();
+		console.log(isAuthor);
 	}, [slug, navigate]);
+	
+	useEffect(() => {
+		const fetchImage = async () => {
+			const src = await fileUploadService.GetFilePreview(post.featuredImage);
+			setImage(src);
+		}
+		fetchImage();
+	}, [post]);
 
-	const deletePost = () => {
-		postService.DeletePost(post.$id).then((status) => {
+	const deletePost = async () => {
+		await postService.DeletePost(post.$id).then((status) => {
 			if (status) {
 				fileUploadService.DeleteFile(post.featuredImage);
 				navigate("/");
@@ -38,7 +51,7 @@ export default function Post() {
 			<Container>
 				<div className="w-full flex justify-center mb-4 relative border rounded-xl p-2">
 					<img
-						src={fileUploadService.GetFilePreview(post.featuredImage)}
+						src={image}
 						alt={post.title}
 						className="rounded-xl"
 					/>

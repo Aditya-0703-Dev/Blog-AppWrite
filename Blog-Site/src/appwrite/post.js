@@ -12,7 +12,7 @@ export class PostService {
         this.databases = new Databases(this.client);
     }
 
-    async CreatePost({title, content, image, slug, userId, status}){
+    async CreatePost({title, content, featuredImage, slug, userId, status}){
         try {
             return await this.databases.createDocument(
                 config.appwriteDatabaseID,
@@ -21,8 +21,8 @@ export class PostService {
                 {
                     title,
                     content,
-                    image,
-                    userId,
+                    featuredImage,
+                    createdby: userId,
                     status
                 }
             );
@@ -31,7 +31,7 @@ export class PostService {
         }
     }
 
-    async UpdatePost(slug, {title, content, image, userId, status}){
+    async UpdatePost(slug, {title, content, featuredImage, userId, status}){
         try {
             return await this.databases.updateDocument(
                 config.appwriteDatabaseID,
@@ -40,7 +40,7 @@ export class PostService {
                 {
                     title,
                     content,
-                    image,
+                    featuredImage,
                     userId,
                     status
                 }
@@ -76,13 +76,13 @@ export class PostService {
         }
     }
 
-    async GetPosts(query = Query.select(["status", "Active"])){
+    async GetPosts(query){
         try {
             //returns an array of all posts
             return await this.databases.listDocuments(
                 config.appwriteDatabaseID,
                 config.appwriteCollectionID,
-                query
+                Query.equal['status', ['Active']]
             );
         } catch (error) {
             console.log("Appwrite serive :: GetPosts :: error", error);

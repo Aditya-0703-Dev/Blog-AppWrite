@@ -7,21 +7,33 @@ function AllPost() {
     const [posts, setPosts] = useState([])
 
     useEffect(() => {
-        postService.GetPosts().then((posts) => {
-            if(posts){
-                setPosts(posts)
+        const fetchPosts = async () => {
+            const posts = await postService.GetPosts();
+            if (posts) {
+                setPosts(posts);
             }
-        })
-    }, [])
+        };
+        fetchPosts();
+    }, []);
+
+    if(posts.length === 0){
+        return (
+            <div className='w-full py-8'>
+                <Container>
+                    <h1 className='text-3xl font-bold'>No Posts Found</h1>
+                </Container>
+            </div>
+        )
+    }
 
     return (
         <div className='w-full py-8'>
             <Container>
                 <div className='flex flex-wrap'>
                     {
-                        posts.map((post) => (
+                        posts.documents.map((post) => (
                             <div key={post.$id} className='p-2 w-1/4'>
-                                <PostCard post={post} />
+                                <PostCard {...post} />
                             </div>
                         ))
                     }

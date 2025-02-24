@@ -6,12 +6,14 @@ function Home() {
 
     const [posts, setPosts] = useState([])
     useEffect(() => {
-        postService.GetPosts().then((posts) => {
-            if(posts){
-                setPosts(posts)
+        const fetchPosts = async () => {
+            const posts = await postService.GetPosts();
+            if (posts) {
+                setPosts(posts);
             }
-        })
-    }, [])
+        };
+        fetchPosts();
+    }, []);
 
     if(posts.length === 0){
         return (
@@ -27,9 +29,9 @@ function Home() {
         <div className='py-8 w-full'>
             <Container>
                 <div className='flex flex-wrap'>
-                    {posts.map((post) => (
-                        <div className='p-2 w-1/4'>
-                            <PostCard post={post} />
+                    {posts.documents.map((post) => (
+                        <div className='p-2 w-1/4' key={post.$id}>
+                            <PostCard {...post} />
                         </div>
                     ))}
                 </div>

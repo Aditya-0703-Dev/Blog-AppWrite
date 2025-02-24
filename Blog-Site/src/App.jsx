@@ -36,8 +36,7 @@ function App() {
         <div className='w-full block'>
           <Header />
           <main>
-            Test 123
-            {/* <Outlet /> */}
+            <Outlet />
           </main>
           <Footer />
         </div>
