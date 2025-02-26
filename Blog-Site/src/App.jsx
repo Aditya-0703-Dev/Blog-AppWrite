@@ -3,7 +3,6 @@ import {useDispatch, useSelector} from 'react-redux'
 import authService from './appwrite/auth';
 import {login, logout} from './features/authSlice';
 import {Header, Footer} from './components/componentsIndex';
-import './App.css'
 import { Outlet } from 'react-router-dom';
 
 function App() {
@@ -32,14 +31,12 @@ function App() {
     )
   } else {
     return (
-      <div className='min-h-screen flex flex-wrap content-between bg-gray-400'>
-        <div className='w-full block'>
-          <Header />
-          <main>
+      <div className='min-h-screen flex flex-col bg-slate-100'>
+        <Header />
+          <main className='flex-grow shadow-inner'>
             <Outlet />
           </main>
           <Footer />
-        </div>
       </div>
     )
   }

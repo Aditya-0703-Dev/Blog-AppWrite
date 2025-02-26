@@ -15,15 +15,15 @@ function PostCard({ $id, featuredImage, title }) {
 	}, [featuredImage]);
 
 	return(
-		<Link to={`/post/${$id}`} className="w-full bg-gray-100 rounded-xl p-4">
-			<div className="w-full justify-center mb-4">
+		<Link to={`/post/${$id}`} className=" block w-full bg-gray-100 rounded-xl p-2">
+			<div className="w-full justify-center mb-2">
 				<img
 					src={imageSrc}
 					alt={title}
 					className="rounded-xl"
 				/>
+				<h2 className="text-xl font-bold">{title}</h2>
 			</div>
-			<h2 className="text-xl font-bold">{title}</h2>
 		</Link>
 	)
 }

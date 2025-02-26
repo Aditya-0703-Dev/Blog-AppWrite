@@ -23,7 +23,9 @@ const router = createBrowserRouter(
         </Protected>
       } />
       <Route path='/all-posts' element={
-        <AllPost />
+        <Protected>
+          <AllPost />
+        </Protected>
       } />
       <Route path='/edit-post/:slug' element={
         <Protected>
@@ -36,7 +38,9 @@ const router = createBrowserRouter(
         </Protected>
       } />
       <Route path='/post/:slug' element={
-        <Post />
+        <Protected>
+          <Post />
+        </Protected>
       } />
     </Route>
   )
