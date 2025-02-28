@@ -15,7 +15,7 @@ function PostCard({ $id, featuredImage, title }) {
 	}, [featuredImage]);
 
 	return(
-		<Link to={`/post/${$id}`} className=" block w-full bg-gray-100 rounded-xl p-2">
+		<Link to={`/post/${$id}`} className=" block w-full bg-gray-100 duration-200 hover:bg-teal-600/20 rounded-xl p-2">
 			<div className="w-full justify-center mb-2">
 				<img
 					src={imageSrc}

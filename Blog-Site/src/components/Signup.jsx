@@ -2,13 +2,14 @@ import React, { useState } from "react";
 import authService from "../appwrite/auth";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
-import { Button, Input, Logo } from "./componentsIndex";
+import { Button, Input, Logo, Loader } from "./componentsIndex";
 import { useDispatch } from "react-redux";
 import { login as storeLogin } from "../features/authSlice";
 
 function Signup() {
 	const [error, setError] = useState("");
 	const [errorCode, setErrorCode] = useState();
+	const [loading, setLoading] = useState(false);
 
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
@@ -16,6 +17,7 @@ function Signup() {
 
 	const createUser = async (data) => {
 		setError("");
+		setLoading(true);
 		try {
 			const sessionData = await authService.CreateAccount(data);
 			if (sessionData) {
@@ -29,6 +31,7 @@ function Signup() {
 			setError(error.message);
 			setErrorCode(error.code);
 		}
+		setLoading(false);
 	};
 
 	return (
@@ -37,7 +40,7 @@ function Signup() {
 				className={`mx-auto w-full max-w-lg bg-gray-100 rounded-xl p-10 border border-black/10`}
 			>
 				<div className="mb-2 flex justify-center">
-					<span className="inline-block w-full max-w-[100px]">
+					<span className="inline-block w-full max-w-[200px]">
 						<Logo width="100%" />
 					</span>
 				</div>
@@ -58,7 +61,7 @@ function Signup() {
 				{console.log(error)}
 
 				<form onSubmit={handleSubmit(createUser)}>
-					<div className="space-y-5">
+					<div className="space-y-5 mt-6">
 						<Input
 							label="Username: "
 							placeholder="Enter your username"
@@ -95,8 +98,8 @@ function Signup() {
 							})}
 						/>
 						{errors.password && <p className="text-red-400">{errors.password?.message}</p>}
-                        <Button type="submit" className="w-full">
-							Create Account
+                        <Button type="submit" className="w-full bg-teal-600 hover:bg-teal-800" disabled={loading}>
+							{loading ? <Loader /> : "Create Account"}
 						</Button>
 					</div>
 				</form>

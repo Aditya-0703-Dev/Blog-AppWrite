@@ -12,5 +12,6 @@ import Login from './Login';
 import PostForm from './post_form/PostForm';
 import ComboBox from './ComboBox';
 import Protected from './AuthLayout';
+import Loader from './Loader';
 
-export {Header, Footer, Logo, Container, LogoutBtn, Button, Input, RTE, PostCard, Signup, Login, PostForm, ComboBox, Protected};
+export {Header, Footer, Logo, Container, LogoutBtn, Button, Input, RTE, PostCard, Signup, Login, PostForm, ComboBox, Protected, Loader};

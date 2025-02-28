@@ -1,5 +1,5 @@
 import config from '../config/config.js'
-import { Client, Databases, Query} from "appwrite";
+import { Client, Databases, Query, ID} from "appwrite";
 
 export class PostService {
     client = new Client();
@@ -17,7 +17,7 @@ export class PostService {
             return await this.databases.createDocument(
                 config.appwriteDatabaseID,
                 config.appwriteCollectionID,
-                `${userId}-${slug}`,
+                `${userId}-${ID.unique().substring(0,14)}`,
                 {
                     title,
                     content,

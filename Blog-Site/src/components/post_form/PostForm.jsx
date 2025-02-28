@@ -1,6 +1,6 @@
 import React , {useCallback, useEffect, useState} from 'react'
 import { useForm } from 'react-hook-form'
-import {Button, Input, ComboBox, RTE} from '../componentsIndex'
+import {Button, Input, ComboBox, RTE, Loader} from '../componentsIndex'
 import postService from '../../appwrite/post'
 import fileUploadService from '../../appwrite/fileupload'
 import { useNavigate } from 'react-router-dom'
@@ -19,41 +19,49 @@ function PostForm({post}) {
     const navigate = useNavigate()
 
     const [image, setImage] = useState("");
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("");
     const userData = useSelector(state => state.userData)
 
     const submit = async (data) => {
-        if(post){
-            const file = data.image[0] ? await fileUploadService.CreateFile(data.image[0]) : null
-            console.log(post);
-            if(file){
-                await fileUploadService.DeleteFile(post.featuredImage)
+        setError("");
+        setLoading(true);
+        try {
+            if(post){
+                const file = data.image[0] ? await fileUploadService.CreateFile(data.image[0]) : null
+                console.log(post);
+                if(file){
+                    await fileUploadService.DeleteFile(post.featuredImage)
+                }
+    
+                const updatedPost = await postService.UpdatePost(post.$id, {
+                    ...data,
+                    featuredImage: file ? file.$id : post.featuredImage
+                })
+    
+                if(updatedPost){
+                    navigate(`/post/${updatedPost.$id}`)
+                }
+            } else {
+                const file = data.image[0] ? await fileUploadService.CreateFile(data.image[0]) : null
+                if(file){
+                    const fileID = file.$id;
+                    data.featuredImage = fileID;
+                }
+    
+                const newPost = await postService.CreatePost({
+                    ...data,
+                    userId: userData.$id
+                })
+    
+                if(newPost){
+                    navigate(`/post/${newPost.$id}`)
+                }
             }
-
-            const updatedPost = await postService.UpdatePost(post.$id, {
-                ...data,
-                featuredImage: file ? file.$id : post.featuredImage
-            })
-
-            if(updatedPost){
-                navigate(`/post/${updatedPost.$id}`)
-            }
-        } else {
-            const file = data.image[0] ? await fileUploadService.CreateFile(data.image[0]) : null
-            if(file){
-                const fileID = file.$id;
-                data.featuredImage = fileID;
-            }
-
-            const newPost = await postService.CreatePost({
-                ...data,
-                userId: userData.$id
-            })
-
-            if(newPost){
-                navigate(`/post/${newPost.$id}`)
-            }
+        } catch (error) {
+            setError(error.message)
         }
-
+        setLoading(false);
     }
 
     const slugTransform = useCallback((value) => {
@@ -130,8 +138,9 @@ function PostForm({post}) {
                     className="mb-4"
                     {...register("status", { required: true })}
                 />
-                <Button type="submit" bgColor={post ? "bg-green-500" : undefined} className="w-full">
-                    {post ? "Update" : "Submit"}
+                {error && <p className="text-red-600">{error}</p>}
+                <Button type="submit" bgColor={post ? "bg-green-500" : "bg-teal-600"} className={`w-full ${post ? "hover:bg-green-600" : "hover:bg-teal-800"} text-white`}>
+                    {loading ? <Loader /> : post ? "Update" : "Submit"}
                 </Button>
             </div>
         </form>

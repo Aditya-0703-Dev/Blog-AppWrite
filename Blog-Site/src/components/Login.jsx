@@ -2,19 +2,21 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { login as storeLogin } from "../features/authSlice";
 import { useDispatch } from "react-redux";
-import { Button, Input, Logo } from "./componentsIndex";
+import { Button, Input, Logo, Loader } from "./componentsIndex";
 import authService from "../appwrite/auth";
-import { useForm } from "react-hook-form";
+import { set, useForm } from "react-hook-form";
 
 function Login() {
-	const { register, handleSubmit } = useForm();
+	const { register, handleSubmit, formState: {errors} } = useForm();
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 
 	const [error, setError] = useState("");
+	const [loading, setLoading] = useState(false);
 
 	const login = async (data) => {
 		setError("");
+		setLoading(true);
 		try {
 			const sessionData = await authService.LoginUser(data);
 			if (sessionData) {
@@ -27,12 +29,15 @@ function Login() {
 		} catch (error) {
 			setError(error.message);
 		}
+		setTimeout(() => {console.log(loading);
+		}, 10000)
+		setLoading(false);
 	};
 	return (
 		<div className="flex items-center justify-center w-full">
 			<div className="mx-auto w-full max-w-lg bg-gray-100 rounded-xl p-10 border border-black/10">
 				<div className="mb-2 flex justify-center">
-					<span className="inline-block w-full max-w-[100px]">
+					<span className="inline-block w-full max-w-[200px]">
 						<Logo width="100%" />
 					</span>
 				</div>
@@ -55,8 +60,9 @@ function Login() {
 							label="Email: "
 							type="email"
 							placeholder="Enter your email"
+							className={errors.email ? "border-red-400 border-4" : "border-green-400 border-2"}
 							{...register("email", {
-								required: true,
+								required: {value:true, message:"Email address is required!"},
 								validate: {
 									matchPatern: (value) =>
 										/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(value) ||
@@ -64,16 +70,21 @@ function Login() {
 								},
 							})}
 						/>
+						{errors.email && <p className="text-red-400">{errors.email?.message}</p>}
 						<Input
 							label="Password: "
 							type="password"
 							placeholder="Enter your password"
+							className={errors.password ? "border-red-400 border-4" : "border-green-400 border-2"}
 							{...register("password", {
-								required: true,
+								required: {value:true, message:"Password is required!"},
+								minLength: {value:8, message:"Password must be at least 8 characters long!"},
+								maxLength: {value:25, message:"Password must be at most 25 characters long!"},
 							})}
 						/>
-						<Button type="submit" className="w-full">
-							Sign In
+						{errors.password && <p className="text-red-400">{errors.password?.message}</p>}
+						<Button type="submit" className="w-full bg-teal-600 hover:bg-teal-800" disabled={loading}>
+							{loading ? <Loader /> : "Sign In"}
 						</Button>
 					</div>
 				</form>
