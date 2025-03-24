@@ -11,6 +11,8 @@ function Signup() {
 	const [errorCode, setErrorCode] = useState();
 	const [loading, setLoading] = useState(false);
 
+	let b =0;
+
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const { register, handleSubmit, formState: {errors} } = useForm();

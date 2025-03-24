@@ -70,7 +70,7 @@ export default function Post() {
 							</div>
 						)}
 					</div>
-					<div className="w-2/5 pl-3 border rounded pt-3">
+					<div className="w-2/5 pl-3 border rounded pt-3 bg-white">
 						<div className="w-full mb-6">
 							<h1 className="text-5xl font-bold">{post.title}</h1>
 						</div>

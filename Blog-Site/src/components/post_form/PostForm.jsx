@@ -139,7 +139,7 @@ function PostForm({post}) {
                     {...register("status", { required: true })}
                 />
                 {error && <p className="text-red-600">{error}</p>}
-                <Button type="submit" bgColor={post ? "bg-green-500" : "bg-teal-600"} className={`w-full ${post ? "hover:bg-green-600" : "hover:bg-teal-800"} text-white`}>
+                <Button type="submit" bgColor={post ? "bg-green-500" : "bg-teal-600"} className={`w-full ${post ? "hover:bg-green-600" : "hover:bg-teal-800"} text-white`} disabled={loading}>
                     {loading ? <Loader /> : post ? "Update" : "Submit"}
                 </Button>
             </div>

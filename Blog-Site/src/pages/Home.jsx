@@ -14,7 +14,6 @@ function Home() {
             const posts = await postService.GetPosts();
             if (posts) {
                 setPosts(posts);
-                console.log(posts.documents.length);
             }
         };
         fetchPosts();
